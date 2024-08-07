@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feature Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+			width:33%;
+			float:left;
+        }
+        .section h2 {
+            margin: 10px 0;
+        }
+        .results {
+            margin-left: 20px;
+        }
+		button {
+		padding:10px 20px;
+		text-transform:uppercase;
+		border-radius:0px;
+		border:1px solid black;
+		}
+		button:hover {
+		background:black;
+		color:white;
+		}
+		
+		button.clear {
+		background:red;
+		color:white;
+		}
+		button.clear:hover {
+		background:#990000;
+		}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Compare Amenities</h1>
+    <textarea id="inputFeatures" rows="10" cols="50" placeholder="Enter all amenities, one per line..."></textarea><br>
+    <button onclick="compareFeatures()">Compare</button>
+    <button class="clear" onclick="clearInput()">Clear</button>
+	
+	<div style="clear:both; margin-bottom:40px;"></div>
+
+    <div class="section" id="luxuriesSection">
+        <h2>Luxuries:</h2>
+        <div class="results" id="luxuriesResults"></div>
+    </div>
+
+    <div class="section" id="unitFeaturesSection">
+        <h2>Unit Features:</h2>
+        <div class="results" id="unitFeaturesResults"></div>
+    </div>
+
+    <div class="section" id="communityAmenitiesSection">
+        <h2>Community Amenities:</h2>
+        <div class="results" id="communityAmenitiesResults"></div>
+    </div>
+</div>
+
+<script>
+const luxuries = ["Basketball Court", "Bath Tub", "Billiards", "Elevator", "Golf Course", "Laundry", "Lawn", "Pool"];
+const unitFeatures = ["Air Conditioning", "Ceiling Fans", "Dens Available", "Dishwasher", "Disposal", "Electronic Thermostat", "Elevator", "Fireplace", "Furnished Available", "Gas Stove", "Granite Countertops", "Hardwood Floor", "Kitchen Island", "Large Windows", "Microwave", "Pantry", "Patio", "Refrigerator", "Stainless Steel Appliances", "Storage Space", "Sunroom", "Tile Floor", "Vinyl Floor", "Walk-in Closet", "Washer/Dryer", "Wet Bar"];
+const communityAmenities = ["Attached Garages", "Bicycle Storage", "Business Center", "Clubhouse", "Concierge", "Controlled Access", "Courtyard", "EV Charging", "Elevator", "Fenced Lot", "Fitness Center", "Grill", "Guest Apartment", "Lounge", "Maintenance on site", "Media Center", "Package Service", "Pest Control", "Pet Grooming Station", "Playground", "Pool", "Property Manager on Site", "Sauna", "Spa", "Storage Space", "WiFi"];
+
+const customMappings = {
+    "Tub/Shower": "Bath Tub",
+    "Laundry Facilities": "Laundry",
+    "Island Kitchen": "Kitchen Island"
+};
+
+document.getElementById('inputFeatures').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        compareFeatures();
+    }
+});
+
+function compareFeatures() {
+    const input = document.getElementById('inputFeatures').value.split('\n').map(item => item.trim()).filter(item => item !== '');
+    const mappedInput = input.map(item => customMappings[item] || item);
+    displayResults(mappedInput, luxuries, 'luxuriesResults');
+    displayResults(mappedInput, unitFeatures, 'unitFeaturesResults');
+    displayResults(mappedInput, communityAmenities, 'communityAmenitiesResults');
+}
+
+function displayResults(input, list, resultElementId) {
+    const results = new Set();
+    list.forEach(item => {
+        input.forEach(i => {
+            if (i.toLowerCase() === item.toLowerCase() || item.toLowerCase().includes(i.toLowerCase())) {
+                results.add(item);
+            }
+        });
+    });
+    document.getElementById(resultElementId).innerHTML = results.size ? Array.from(results).join('<br>') : 'No matches found';
+}
+
+function clearInput() {
+    document.getElementById('inputFeatures').value = '';
+    document.getElementById('luxuriesResults').innerHTML = '';
+    document.getElementById('unitFeaturesResults').innerHTML = '';
+    document.getElementById('communityAmenitiesResults').innerHTML = '';
+}
+</script>
+
+</body>
+</html>
